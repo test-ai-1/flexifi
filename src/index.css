@@ -8,35 +8,60 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
+    /* Primary Brand Colors */
+    --primary: 210 98% 48%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 210 98% 58%;
+    
+    /* Background Colors */
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
+    --foreground: 222 22% 15%;
+    --surface: 210 40% 98%;
+    
+    /* Card and Content */
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
+    --card-foreground: 222 22% 15%;
+    
+    /* Secondary Colors */
+    --secondary: 210 17% 95%;
+    --secondary-foreground: 222 22% 15%;
+    
+    /* Accent Colors */
+    --accent: 142 76% 36%;
+    --accent-foreground: 0 0% 100%;
+    
+    /* Muted Colors */
+    --muted: 210 17% 95%;
+    --muted-foreground: 215 13% 47%;
+    
+    /* Border and Input */
+    --border: 214 20% 88%;
+    --input: 214 20% 88%;
+    --ring: 210 98% 48%;
+    
+    /* Status Colors */
+    --success: 142 76% 36%;
+    --warning: 38 92% 50%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    
+    /* Popover */
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.5rem;
+    --popover-foreground: 222 22% 15%;
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(210 98% 48%), hsl(210 98% 58%));
+    --gradient-surface: linear-gradient(180deg, hsl(210 40% 99%), hsl(210 17% 95%));
+    
+    /* Shadows */
+    --shadow-card: 0 4px 6px -1px hsl(210 98% 48% / 0.1);
+    --shadow-header: 0 1px 3px 0 hsl(210 20% 20% / 0.1);
+    
+    /* Radius */
+    --radius: 12px;
+    
+    /* Transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     --sidebar-background: 0 0% 98%;
 
@@ -56,33 +81,54 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
+    /* Primary Brand Colors */
+    --primary: 210 98% 58%;
+    --primary-foreground: 222 22% 15%;
+    --primary-glow: 210 98% 68%;
+    
+    /* Background Colors */
+    --background: 222 22% 8%;
     --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
+    --surface: 222 22% 12%;
+    
+    /* Card and Content */
+    --card: 222 22% 12%;
     --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
+    
+    /* Secondary Colors */
+    --secondary: 222 20% 18%;
     --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
+    
+    /* Accent Colors */
+    --accent: 142 76% 46%;
+    --accent-foreground: 0 0% 100%;
+    
+    /* Muted Colors */
+    --muted: 222 20% 18%;
+    --muted-foreground: 215 20% 65%;
+    
+    /* Border and Input */
+    --border: 222 20% 18%;
+    --input: 222 20% 18%;
+    --ring: 210 98% 58%;
+    
+    /* Status Colors */
+    --success: 142 76% 46%;
+    --warning: 38 92% 60%;
+    --destructive: 0 62% 50%;
     --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    
+    /* Popover */
+    --popover: 222 22% 12%;
+    --popover-foreground: 210 40% 98%;
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(210 98% 58%), hsl(210 98% 68%));
+    --gradient-surface: linear-gradient(180deg, hsl(222 22% 12%), hsl(222 20% 18%));
+    
+    /* Shadows */
+    --shadow-card: 0 4px 6px -1px hsl(0 0% 0% / 0.25);
+    --shadow-header: 0 1px 3px 0 hsl(0 0% 0% / 0.3);
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -100,6 +146,57 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold;
+  }
+}
+
+@layer components {
+  .finance-card {
+    @apply bg-card rounded-2xl p-6 shadow-sm border border-border;
+  }
+  
+  .header-gradient {
+    background: var(--gradient-primary);
+  }
+  
+  .surface-gradient {
+    background: var(--gradient-surface);
+  }
+  
+  .btn-primary {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90 font-medium px-6 py-3 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md;
+  }
+  
+  .btn-secondary {
+    @apply bg-secondary text-secondary-foreground hover:bg-secondary/80 font-medium px-6 py-3 rounded-xl transition-all duration-200 border border-border;
+  }
+  
+  .input-field {
+    @apply bg-background border border-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors;
+  }
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out;
+  }
+  
+  .animate-slide-up {
+    animation: slideUp 0.4s ease-out;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 }
