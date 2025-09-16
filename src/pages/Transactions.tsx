@@ -1,105 +1,54 @@
-import { useState } from "react";
-import { ArrowLeft, Search, Filter, Download, Calendar } from "lucide-react";
+import { useState, useEffect } from "react";
+import { ArrowLeft, Search, Filter, Download, Calendar, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
+import api from "../lib/api";
+import { useToast } from "@/hooks/use-toast";
 
 const Transactions = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("all");
   const [dateFilter, setDateFilter] = useState("all");
+  const [transactions, setTransactions] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const mockTransactions = [
-    {
-      id: "TXN001",
-      type: "payment",
-      description: "Swiggy - Food Delivery",
-      payee: "Swiggy",
-      amount: -450,
-      date: "2024-01-15",
-      time: "2:30 PM",
-      status: "completed",
-      method: "UPI",
-      category: "Food"
-    },
-    {
-      id: "TXN002", 
-      type: "transfer",
-      description: "Money Transfer to John",
-      payee: "John Doe",
-      amount: -2000,
-      date: "2024-01-14",
-      time: "11:15 AM",
-      status: "completed",
-      method: "Bank Transfer",
-      category: "Transfer"
-    },
-    {
-      id: "TXN003",
-      type: "credit",
-      description: "Salary Credit",
-      payee: "Tech Corp Ltd",
-      amount: 45000,
-      date: "2024-01-01",
-      time: "9:00 AM",
-      status: "completed",
-      method: "Bank Credit",
-      category: "Salary"
-    },
-    {
-      id: "TXN004",
-      type: "payment",
-      description: "Uber Ride",
-      payee: "Uber India",
-      amount: -180,
-      date: "2024-01-13",
-      time: "6:45 PM",
-      status: "completed",
-      method: "Wallet",
-      category: "Transport"
-    },
-    {
-      id: "TXN005",
-      type: "payment",
-      description: "Amazon Shopping",
-      payee: "Amazon India",
-      amount: -1250,
-      date: "2024-01-12",
-      time: "3:20 PM",
-      status: "completed",
-      method: "Card",
-      category: "Shopping"
-    },
-    {
-      id: "TXN006",
-      type: "credit",
-      description: "Cashback Reward",
-      payee: "FlexiFi Rewards",
-      amount: 50,
-      date: "2024-01-11",
-      time: "12:00 PM",
-      status: "completed",
-      method: "Cashback",
-      category: "Rewards"
+  // Fetch transactions from backend
+  useEffect(() => {
+    fetchTransactions();
+  }, []);
+
+  const fetchTransactions = async () => {
+    try {
+      setLoading(true);
+      const data = await api.transaction.getTransactions();
+      setTransactions(data);
+    } catch (error) {
+      console.error("Error fetching transactions:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load transactions. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
 
-  const filteredTransactions = mockTransactions.filter(transaction => {
+  const filteredTransactions = transactions.filter(transaction => {
     const matchesSearch = transaction.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         transaction.payee.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesType = filterType === "all" || transaction.type === filterType;
+                         transaction.category.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesType = filterType === "all" || 
+                       (filterType === "payment" && transaction.amount < 0) ||
+                       (filterType === "credit" && transaction.amount > 0);
     return matchesSearch && matchesType;
   });
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "completed": return "text-success";
-      case "pending": return "text-warning";
-      case "failed": return "text-destructive";
-      default: return "text-muted-foreground";
-    }
+  const getStatusColor = () => {
+    return "text-success"; // All transactions are completed
   };
 
   const getAmountColor = (amount: number) => {
@@ -124,14 +73,25 @@ const Transactions = () => {
               </Button>
               <h1 className="text-xl font-bold">Transaction History</h1>
             </div>
-            <Button 
-              variant="ghost" 
-              size="sm"
-              className="text-white hover:bg-white/10"
-            >
-              <Download className="w-4 h-4 mr-2" />
-              Export
-            </Button>
+            <div className="flex gap-2">
+              <Button 
+                variant="ghost" 
+                size="sm"
+                className="text-white hover:bg-white/10"
+                onClick={() => navigate("/add-transaction")}
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Add Transaction
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                className="text-white hover:bg-white/10"
+              >
+                <Download className="w-4 h-4 mr-2" />
+                Export
+              </Button>
+            </div>
           </div>
         </div>
       </header>
@@ -181,8 +141,13 @@ const Transactions = () => {
 
           {/* Transaction List */}
           <div className="space-y-4">
-            {filteredTransactions.map((transaction) => (
-              <div key={transaction.id} className="finance-card hover:shadow-card transition-shadow cursor-pointer">
+            {loading ? (
+              <div className="text-center py-12">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+                <p className="text-muted-foreground mt-2">Loading transactions...</p>
+              </div>
+            ) : filteredTransactions.map((transaction) => (
+              <div key={transaction.transaction_id} className="finance-card hover:shadow-card transition-shadow cursor-pointer">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
@@ -200,16 +165,16 @@ const Transactions = () => {
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
                         <h3 className="font-semibold text-foreground">{transaction.description}</h3>
-                        <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(transaction.status)} bg-current/10`}>
-                          {transaction.status}
+                        <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor()} bg-current/10`}>
+                          completed
                         </span>
                       </div>
                       <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
-                        <span>To: {transaction.payee}</span>
+                        <span>Category: {transaction.category}</span>
                         <span>•</span>
-                        <span>{transaction.method}</span>
+                        <span>{transaction.payment_method}</span>
                         <span>•</span>
-                        <span>{transaction.date} at {transaction.time}</span>
+                        <span>{new Date(transaction.date).toLocaleDateString()}</span>
                       </div>
                     </div>
                   </div>
@@ -217,7 +182,7 @@ const Transactions = () => {
                     <div className={`text-lg font-bold ${getAmountColor(transaction.amount)}`}>
                       {transaction.amount > 0 ? '+' : ''}₹{Math.abs(transaction.amount).toLocaleString()}
                     </div>
-                    <div className="text-xs text-muted-foreground">ID: {transaction.id}</div>
+                    <div className="text-xs text-muted-foreground">ID: {transaction.transaction_id}</div>
                   </div>
                 </div>
               </div>

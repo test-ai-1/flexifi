@@ -6,10 +6,14 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useNavigate } from "react-router-dom";
+import api from "../lib/api";
+import { useToast } from "@/hooks/use-toast";
 
 const BankDetails = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [verificationStatus, setVerificationStatus] = useState<'idle' | 'pending' | 'success' | 'failed'>('idle');
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     bankName: "",
     accountHolderName: "",
@@ -79,36 +83,54 @@ const BankDetails = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleVerify = () => {
+  const handleVerify = async () => {
     if (validateForm()) {
-      setVerificationStatus('pending');
-      
-      // Mock verification process
-      setTimeout(() => {
-        const success = Math.random() > 0.3; // 70% success rate
-        if (success) {
-          setVerificationStatus('success');
-          // Store bank details (masked)
-          localStorage.setItem("flexifi_bank", JSON.stringify({
-            bankName: formData.bankName,
-            accountHolderName: formData.accountHolderName,
-            last4: formData.accountNumber.slice(-4),
-            ifscCode: formData.ifscCode,
-            verified: true
-          }));
-        } else {
-          setVerificationStatus('failed');
-        }
-      }, 3000);
+      try {
+        setLoading(true);
+        setVerificationStatus('pending');
+        
+        // Create account in backend
+        const accountData = await api.account.createAccount({
+          account_number: formData.accountNumber,
+          current_balance: 0 // Start with 0 balance
+        });
+        
+        setVerificationStatus('success');
+        
+        // Store bank details (masked)
+        localStorage.setItem("flexifi_bank", JSON.stringify({
+          bankName: formData.bankName,
+          accountHolderName: formData.accountHolderName,
+          last4: formData.accountNumber.slice(-4),
+          ifscCode: formData.ifscCode,
+          verified: true,
+          accountId: accountData.account_id
+        }));
+        
+        toast({
+          title: "Account Created",
+          description: "Your bank account has been successfully linked!",
+        });
+        
+      } catch (error: any) {
+        setVerificationStatus('failed');
+        toast({
+          title: "Verification Failed",
+          description: error.message || "Failed to create account. Please try again.",
+          variant: "destructive"
+        });
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
   const handleContinue = () => {
-    navigate("/profile");
+    navigate("/dashboard");
   };
 
   const handleSkip = () => {
-    navigate("/profile");
+    navigate("/dashboard");
   };
 
   // Get user name from localStorage
@@ -306,8 +328,9 @@ const BankDetails = () => {
                     type="button"
                     onClick={handleVerify}
                     className="btn-primary flex-1"
+                    disabled={loading}
                   >
-                    Verify & Continue
+                    {loading ? "Creating Account..." : "Verify & Continue"}
                   </Button>
                   <Button 
                     type="button"

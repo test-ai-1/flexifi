@@ -18,6 +18,12 @@ const Profile = () => {
 
   const menuItems = [
     {
+      icon: "🏠",
+      title: "Dashboard",
+      description: "Financial overview & metrics",
+      path: "/dashboard"
+    },
+    {
       icon: "📊",
       title: "Transaction History",
       description: "View all your transactions",
@@ -28,6 +34,12 @@ const Profile = () => {
       title: "Analysis",
       description: "Financial insights & predictions",
       path: "/analysis"
+    },
+    {
+      icon: "💬",
+      title: "Chat",
+      description: "Talk to your budget assistant",
+      path: "/chat"
     },
     {
       icon: "💳",
